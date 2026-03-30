@@ -1,0 +1,498 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stanford AI for Project Management — Course Summary</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0f1117;
+    --ink-mid: #3a3f52;
+    --ink-soft: #7a7f95;
+    --paper: #f7f5f0;
+    --cream: #edeae2;
+    --rule: #d8d4c8;
+    --white: #ffffff;
+    --red: #8c1515;
+    --teal: #0d7a6b;
+    --teal-light: #e2f3f0;
+    --amber: #b5620a;
+    --amber-light: #fdf0e0;
+    --blue: #1a4f8a;
+    --blue-light: #e8eef8;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.75;
+  }
+
+  /* HEADER */
+  .site-header {
+    background: var(--red);
+    padding: 2rem 2rem 2rem;
+    position: relative; overflow: hidden;
+  }
+  .site-header::after {
+    content: ''; position: absolute; inset: 0;
+    background: repeating-linear-gradient(-55deg, transparent, transparent 20px, rgba(255,255,255,0.025) 20px, rgba(255,255,255,0.025) 21px);
+    pointer-events: none;
+  }
+  .header-inner { max-width: 960px; margin: 0 auto; position: relative; z-index: 1; }
+  .eyebrow { font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 1rem; }
+  .header-title { font-family: 'DM Serif Display', serif; font-size: clamp(2.2rem, 5vw, 3.4rem); color: #fff; line-height: 1.1; margin-bottom: 1.75rem; }
+  .header-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .header-pills span { font-size: 12px; color: rgba(255,255,255,0.75); background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 4px 13px; }
+
+  /* NAV */
+  .nav-strip { background: var(--ink); position: sticky; top: 0; z-index: 100; padding: 0 2rem; }
+  .nav-inner { max-width: 960px; margin: 0 auto; display: flex; overflow-x: auto; scrollbar-width: none; }
+  .nav-inner::-webkit-scrollbar { display: none; }
+  .nav-inner a { font-size: 11.5px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(255,255,255,0.5); text-decoration: none; padding: 1rem 1.25rem; white-space: nowrap; border-bottom: 2px solid transparent; transition: color 0.2s, border-color 0.2s; }
+  .nav-inner a:hover { color: #fff; border-bottom-color: var(--red); }
+
+  /* MAIN */
+  .main { max-width: 960px; margin: 0 auto; padding: 0 2rem 5rem; }
+
+  /* SECTION LABELS */
+  .section-label { font-size: 10.5px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--red); margin: 4.5rem 0 2rem; display: flex; align-items: center; gap: 12px; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--rule); }
+
+  /* DAY ROWS */
+  .days-stack { display: flex; flex-direction: column; gap: 2rem; }
+
+  .day-row { background: var(--white); border: 1px solid var(--rule); border-radius: 14px; overflow: hidden; opacity: 0; transform: translateY(14px); animation: fadeUp 0.5s forwards; }
+  .day-row:nth-child(1) { animation-delay: 0.08s; }
+  .day-row:nth-child(2) { animation-delay: 0.18s; }
+  .day-row:nth-child(3) { animation-delay: 0.28s; }
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+  .day-row-inner { display: grid; grid-template-columns: 220px 1fr; }
+
+  .day-meta { padding: 2.25rem 2rem; border-right: 1px solid var(--rule); display: flex; flex-direction: column; gap: 0.6rem; }
+  .day-1 .day-meta { background: var(--blue-light); border-right-color: #c5d8ef; }
+  .day-2 .day-meta { background: var(--teal-light); border-right-color: #b3ddd7; }
+  .day-3 .day-meta { background: var(--amber-light); border-right-color: #f0d4b0; }
+
+  .day-badge { font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; display: inline-block; align-self: flex-start; }
+  .day-1 .day-badge { background: var(--blue); color: #fff; }
+  .day-2 .day-badge { background: var(--teal); color: #fff; }
+  .day-3 .day-badge { background: var(--amber); color: #fff; }
+
+  .day-heading { font-family: 'DM Serif Display', serif; font-size: 1.3rem; line-height: 1.25; color: var(--ink); }
+  .day-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 0.25rem; }
+  .day-tag { font-size: 10.5px; color: var(--ink-soft); background: rgba(255,255,255,0.75); border: 1px solid var(--rule); border-radius: 4px; padding: 2px 8px; }
+
+  .day-content { padding: 2.25rem 2.5rem; }
+  .topics-label { font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 1.25rem; }
+
+  /* EXPANDED TOPIC ITEMS */
+  .topic-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0; margin-bottom: 2rem; }
+
+  .topic-item { border-bottom: 1px solid var(--cream); padding: 1rem 0 1rem 1.5rem; position: relative; }
+  .topic-item:last-child { border-bottom: none; }
+  .topic-item::before { content: '→'; position: absolute; left: 0; top: 1.05rem; font-size: 11px; color: var(--rule); }
+
+  .topic-title { font-size: 14px; font-weight: 500; color: var(--ink); line-height: 1.4; margin-bottom: 0.35rem; }
+  .topic-desc { font-size: 13px; color: var(--ink-soft); line-height: 1.65; }
+
+  /* HANDS-ON */
+  .hands-on { background: var(--teal-light); border: 1px solid #b3ddd7; border-radius: 12px; padding: 1.5rem 1.75rem; }
+  .hands-on-heading { font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--teal); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 7px; }
+  .hands-on-heading::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+  .ex-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .ex-card { background: var(--white); border-radius: 10px; padding: 1.25rem; border-top: 3px solid var(--teal); }
+  .ex-num { font-size: 11px; font-weight: 500; color: var(--teal); margin-bottom: 5px; display: block; }
+  .ex-title { font-size: 13.5px; font-weight: 500; color: var(--ink); line-height: 1.4; margin-bottom: 7px; display: block; }
+  .ex-desc { font-size: 12.5px; color: var(--ink-soft); line-height: 1.6; }
+
+  /* MCP VS SKILLS comparison */
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+  .compare-card { background: var(--white); border: 1px solid var(--rule); border-radius: 14px; overflow: hidden; }
+  .compare-card-head { padding: 1.5rem 1.75rem 1.25rem; border-bottom: 1px solid var(--rule); }
+  .compare-card.skills .compare-card-head { background: var(--blue-light); }
+  .compare-card.mcp   .compare-card-head { background: var(--teal-light); }
+  .compare-card-head h3 { font-family: 'DM Serif Display', serif; font-size: 1.1rem; color: var(--ink); line-height: 1.3; }
+  .compare-card-head p { font-size: 12px; color: var(--ink-soft); margin-top: 4px; }
+  .compare-card ul { list-style: none; padding: 0.5rem 0; }
+  .compare-card li { font-size: 13.5px; color: var(--ink-mid); padding: 0.6rem 1.75rem; border-bottom: 1px solid var(--cream); display: flex; gap: 10px; align-items: flex-start; line-height: 1.5; }
+  .compare-card li:last-child { border-bottom: none; }
+  .compare-card li::before { content: '·'; color: var(--rule); font-size: 18px; line-height: 1.2; flex-shrink: 0; }
+  .example-row { background: var(--cream); padding: 0.9rem 1.75rem; font-size: 12.5px; color: var(--ink-mid); font-style: italic; line-height: 1.6; }
+  .rule-box { background: var(--white); border: 1px solid var(--rule); border-left: 4px solid var(--red); border-radius: 0 12px 12px 0; padding: 1.5rem 1.75rem; font-size: 14.5px; color: var(--ink-mid); line-height: 1.8; }
+  .rule-box strong { color: var(--ink); }
+
+  /* KEY LEARNINGS */
+  .learnings-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+  .learning-card { background: var(--white); border: 1px solid var(--rule); border-radius: 14px; padding: 1.75rem; }
+  .learning-icon { width: 36px; height: 36px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 16px; margin-bottom: 1rem; }
+  .learning-card h4 { font-family: 'DM Serif Display', serif; font-size: 1.05rem; color: var(--ink); margin-bottom: 0.5rem; line-height: 1.3; }
+  .learning-card p { font-size: 13.5px; color: var(--ink-mid); line-height: 1.7; }
+
+  /* full-width learning card */
+  .learning-card.full { grid-column: 1 / -1; }
+  .learning-card.half { grid-column: span 1; }
+
+  /* PROJECTS */
+  .projects-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
+  .proj-card { background: var(--white); border: 1px solid var(--rule); border-radius: 14px; padding: 1.75rem 1.5rem 1.5rem; display: flex; flex-direction: column; gap: 0.6rem; }
+  .proj-card:nth-child(1) { border-top: 3px solid var(--blue); }
+  .proj-card:nth-child(2) { border-top: 3px solid var(--teal); }
+  .proj-card:nth-child(3) { border-top: 3px solid var(--amber); }
+  .proj-card:nth-child(4) { border-top: 3px solid var(--red); }
+  .proj-icon { font-size: 26px; }
+  .proj-name { font-size: 13.5px; font-weight: 500; color: var(--ink); }
+  .proj-desc { font-size: 12.5px; color: var(--ink-soft); line-height: 1.6; }
+
+  /* FOOTER */
+  .site-footer { background: var(--white); border-top: 1px solid var(--rule); padding: 2rem; text-align: center; font-size: 12px; color: var(--ink-soft); }
+
+  /* RESPONSIVE */
+  @media (max-width: 780px) {
+    .day-row-inner { grid-template-columns: 1fr; }
+    .day-meta { border-right: none; border-bottom: 1px solid var(--rule); padding: 1.75rem; }
+    .ex-grid { grid-template-columns: 1fr; }
+    .compare-grid { grid-template-columns: 1fr; }
+    .learnings-grid { grid-template-columns: 1fr 1fr; }
+    .projects-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 520px) {
+    .learnings-grid, .projects-grid { grid-template-columns: 1fr; }
+    .main { padding: 0 1.25rem 3rem; }
+    .learning-card.full { grid-column: 1; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <p class="eyebrow">Stanford Technology Training</p>
+    <h1 class="header-title">AI for Project Management<br>Course Summary</h1>
+    <div style="font-size: 13px; color: rgba(255,255,255,0.75); display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+      <span>3-day in-person workshop</span>
+      <span style="color: rgba(255,255,255,0.3);">·</span>
+      <span>March 25, 26, 27 &nbsp;·&nbsp; 9am – 4pm</span>
+      <span style="color: rgba(255,255,255,0.3);">·</span>
+      <span>15 participants</span>
+      <span style="color: rgba(255,255,255,0.3);">·</span>
+      <span>Notes (Nida Haque)</span>
+    </div>
+  </div>
+</header>
+
+<nav class="nav-strip">
+  <div class="nav-inner">
+    <a href="#agenda">Agenda</a>
+    <a href="#mcp-vs-skills">MCP vs Skills</a>
+    <a href="#learnings">Key Learnings</a>
+    <a href="#projects">Projects Built</a>
+  </div>
+</nav>
+
+<main class="main">
+
+  <!-- ── AGENDA ── -->
+  <p class="section-label" id="agenda">3-day agenda</p>
+  <div class="days-stack">
+
+    <!-- DAY 1 -->
+    <div class="day-row day-1">
+      <div class="day-row-inner">
+        <div class="day-meta">
+          <span class="day-badge">Day 1</span>
+          <h2 class="day-heading">Foundations &amp; Prompting</h2>
+          <div class="day-tags">
+            <span class="day-tag">Context</span>
+            <span class="day-tag">LLMs</span>
+            <span class="day-tag">Prompting</span>
+          </div>
+        </div>
+        <div class="day-content">
+          <p class="topics-label">Topics covered</p>
+          <ul class="topic-list">
+
+            <li class="topic-item">
+              <div class="topic-title">LLM context layers: training → alignment → system prompt → user</div>
+              <div class="topic-desc">Think of an LLM like an iceberg. At the base is <strong>training data</strong> — the vast internet text the model learned from, giving it general world knowledge. Above that is <strong>alignment</strong>, where the model is fine-tuned to be helpful, honest and safe. The <strong>system prompt</strong> is set by the application (like Claude.ai) to define the AI's persona and rules for every conversation. Finally, the <strong>user layer</strong> is where you interact — your prompts sit at the top, but they're shaped by everything beneath.</div>
+            </li>
+
+            <li class="topic-item">
+              <div class="topic-title">Context engineering vs. prompt engineering</div>
+              <div class="topic-desc"><strong>Prompt engineering</strong> is about crafting a single well-worded request. <strong>Context engineering</strong> is the broader discipline of managing everything the model can "see" at once — including documents, memory, tool results, and conversation history. As AI workflows grow more complex, context engineering becomes the more powerful skill: you're not just writing a better question, you're curating the full information environment the AI reasons within.</div>
+            </li>
+
+            <li class="topic-item">
+              <div class="topic-title">Comparing Claude, ChatGPT, Gemini &amp; Agents</div>
+              <div class="topic-desc">Each platform has the same core LLM capability but differs in ecosystem: <strong>Claude</strong> excels at long documents and nuanced reasoning with Skills/MCP; <strong>ChatGPT</strong> has a broad plugin marketplace and persistent memory; <strong>Gemini</strong> integrates natively with Google Workspace. <strong>Agents</strong> go further — they don't just answer, they plan and take multi-step actions autonomously, like browsing the web, writing files, or calling APIs in sequence.</div>
+            </li>
+
+            <li class="topic-item">
+              <div class="topic-title">Knowledge representation in AI systems</div>
+              <div class="topic-desc">Unlike traditional databases that store facts in tables, LLMs compress knowledge into billions of numerical weights — a form of implicit, probabilistic memory. This means they can reason flexibly across domains but can also "hallucinate" when knowledge is sparse or ambiguous. Understanding this distinction helps you know when to trust the model's built-in knowledge vs. when to feed it verified external data through RAG or MCP.</div>
+            </li>
+
+          </ul>
+
+          <div class="hands-on" style="background: var(--blue-light); border-color: #c5d8ef;">
+            <div class="hands-on-heading" style="color: var(--blue);">
+              <span style="width:7px;height:7px;border-radius:50%;background:var(--blue);flex-shrink:0;display:inline-block;"></span>
+              Hands-on exercises
+            </div>
+            <div class="ex-grid" style="grid-template-columns: 1fr 1fr;">
+              <div class="ex-card" style="border-top-color: var(--blue);">
+                <span class="ex-num" style="color:var(--blue);">Exercise 1</span>
+                <span class="ex-title">Prompting 5-level assessment</span>
+                <p class="ex-desc">We tested prompting maturity by writing the same PM request at 5 escalating levels — from a single vague sentence all the way to a fully context-engineered prompt with defined role, output format, worked examples, and explicit constraints. Comparing the outputs made it immediately clear how much prompt structure shapes response quality.</p>
+              </div>
+              <div class="ex-card" style="border-top-color: var(--blue);">
+                <span class="ex-num" style="color:var(--blue);">Exercise 2</span>
+                <span class="ex-title">Custom GPT / agent for hotel management</span>
+                <p class="ex-desc">We built a custom GPT (or Claude Project) scoped to a hotel management scenario — giving it a persona, domain knowledge, and specific instructions relevant to hospitality PM. This exercise showed how wrapping an LLM in a purpose-built context transforms a general AI into a focused domain expert that consistently responds within the right frame of reference.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 2 -->
+    <div class="day-row day-2">
+      <div class="day-row-inner">
+        <div class="day-meta">
+          <span class="day-badge">Day 2</span>
+          <h2 class="day-heading">Artifacts, MCP &amp; Skills</h2>
+          <div class="day-tags">
+            <span class="day-tag">Artifacts</span>
+            <span class="day-tag">MCP</span>
+            <span class="day-tag">Skills</span>
+            <span class="day-tag">Promptuary</span>
+          </div>
+        </div>
+        <div class="day-content">
+          <p class="topics-label">Topics covered</p>
+          <ul class="topic-list">
+
+            <li class="topic-item">
+              <div class="topic-title">Gen 1–4 artifacts: documents → interactive apps → AI-powered tools → inline</div>
+              <div class="topic-desc">Artifacts started as a simple sidebar panel for generated documents (Gen 1). They evolved into interactive HTML/JS mini-apps like games and dashboards (Gen 2), then gained the ability to call the Claude API directly — meaning the artifact itself can run AI logic, not just display static content (Gen 3). The latest Gen 4 renders artifacts inline in the conversation, making the boundary between chat and app essentially disappear.</div>
+            </li>
+
+            <li class="topic-item">
+              <div class="topic-title">MCP as universal AI interface &amp; the Promptuary system</div>
+              <div class="topic-desc"><strong>Model Context Protocol (MCP)</strong> is an open standard (launched Nov 2024) that gives AI a universal "hands" — a consistent way to call external tools, read data sources, and take actions regardless of which service is on the other end. Think of it like USB-C for AI integrations. <strong>Promptuary</strong> is a practical MCP application: a prompt library system organized by PMBOK performance domains, accessible directly from within a Claude conversation so your best prompts are always one step away.</div>
+            </li>
+
+            <li class="topic-item">
+              <div class="topic-title">Skills: reusable instruction packages (SKILL.md)</div>
+              <div class="topic-desc">A <strong>Skill</strong> is a packaged set of custom instructions stored in a SKILL.md file that Claude reads and follows whenever triggered. Unlike a one-off prompt, Skills persist across all sessions and can be shared org-wide. They use <strong>progressive loading</strong> — only reading the parts of the skill actually needed for a given task, keeping context window usage lean. Anthropic also used this same mechanism internally to build Claude's own file-creation capabilities.</div>
+            </li>
+
+            <li class="topic-item">
+              <div class="topic-title">Intent matching vs. explicit slash commands</div>
+              <div class="topic-desc">Skills can be triggered in two ways. <strong>Intent matching</strong> is the smarter path: Claude reads your request, scans available skill descriptions, and automatically applies the right skill — no trigger word needed. For example, asking "clean up this text" automatically invokes a polish skill. <strong>Slash commands</strong> give explicit control: typing <code>/risk-register</code> directly invokes that skill. Anthropic recently merged both approaches so you can use either interchangeably.</div>
+            </li>
+
+            <li class="topic-item">
+              <div class="topic-title">Skill Creator: building custom skills with Claude</div>
+              <div class="topic-desc">You don't need to write SKILL.md files by hand. The <strong>Skill Creator skill</strong> is a meta-skill — a skill that helps you build other skills. Describe your workflow to Claude (e.g. "I always want status reports in this format with these sections"), and it will structure, write, and package the skill for you. You can then upload it to your personal or org skill library, toggle it on, and it's live across every future conversation.</div>
+            </li>
+
+          </ul>
+
+          <div class="hands-on">
+            <div class="hands-on-heading">Hands-on exercises</div>
+            <div class="ex-grid" style="grid-template-columns: 1fr 1fr;">
+              <div class="ex-card">
+                <span class="ex-num">Exercise 1</span>
+                <span class="ex-title">Charter → skill → vendor evaluation</span>
+                <p class="ex-desc">We created a project charter with Claude, then used the Skill Creator to encode our evaluation methodology into a custom skill — defining scoring criteria, weighting, and output format. We then applied that skill to assess a real vendor proposal. The key insight: the skill ensures Claude always evaluates against <em>your</em> specific criteria, not generic AI defaults, making every future vendor review consistent and auditable.</p>
+              </div>
+              <div class="ex-card">
+                <span class="ex-num">Exercise 2</span>
+                <span class="ex-title">Presentation deck in Cowork</span>
+                <p class="ex-desc">Using Claude Cowork, we transformed the project charter from Exercise 1 into a polished presentation deck — without opening PowerPoint. Cowork handled file creation, slide structure, and formatting as a multi-step agentic task. This demonstrated how non-developers can automate end-to-end document workflows that previously required manual effort across multiple tools.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 3 -->
+    <div class="day-row day-3">
+      <div class="day-row-inner">
+        <div class="day-meta">
+          <span class="day-badge">Day 3</span>
+          <h2 class="day-heading">Advanced Tools &amp; Integration</h2>
+          <div class="day-tags">
+            <span class="day-tag">NotebookLM</span>
+            <span class="day-tag">Cowork</span>
+            <span class="day-tag">Security</span>
+          </div>
+        </div>
+        <div class="day-content">
+          <p class="topics-label">Topics covered</p>
+          <ul class="topic-list">
+
+            <li class="topic-item">
+              <div class="topic-title">Video &amp; audio generation with NotebookLM</div>
+              <div class="topic-desc">Google's <strong>NotebookLM</strong> can transform your documents, notes, and research into audio overviews — podcast-style conversations between two AI hosts that summarize and discuss your content. This is a powerful way to make dense project documentation accessible and shareable: imagine turning a 50-page feasibility study into a 10-minute audio briefing your team can listen to on the go.</div>
+            </li>
+
+            <li class="topic-item">
+              <div class="topic-title">Claude Cowork: no-code desktop task automation</div>
+              <div class="topic-desc"><strong>Claude Cowork</strong> is a desktop tool that brings agentic AI capabilities to non-developers — think of it as Claude Code without needing to know how to code. It can create and edit files (Word docs, spreadsheets, presentations, PDFs), automate multi-step workflows, and manage tasks across your local system. It's the practical bridge between "AI gave me an answer" and "AI did the work for me."</div>
+            </li>
+
+            <li class="topic-item">
+              <div class="topic-title">MCP vs. Skills — when to use which</div>
+              <div class="topic-desc"><strong>Skills</strong> encode <em>how</em> Claude should think and work: methodology, tone, output format, evaluation criteria. <strong>MCP</strong> controls <em>what</em> Claude can access: live databases, Slack channels, spreadsheets, external APIs. MCP also acts as a deterministic limiter — it constrains Claude's reach so it only touches what you've explicitly permitted. Use Skills for repeatable logic; use MCP for live data. The most powerful setups combine both: MCP pulls the data, Skills shape what Claude does with it.</div>
+            </li>
+
+            <li class="topic-item">
+              <div class="topic-title">Extending AI as a hub vs. embedding AI as a feature</div>
+              <div class="topic-desc">There are two fundamentally different ways to integrate AI into your work. <strong>Extending AI</strong> (the hub model) puts the AI at the center: you talk to Claude, and Claude talks to all your tools — Slack, Google Drive, your database, your calendar. You get a single interface for everything. <strong>Embedding AI</strong> (the feature model) puts AI inside existing apps: Google Docs gets a "Help me write" button, Excel gets Copilot. Both have value, but the hub model is more powerful for complex, cross-tool workflows.</div>
+            </li>
+
+          </ul>
+
+          <div class="hands-on" style="background: var(--amber-light); border-color: #f0d4b0;">
+            <div class="hands-on-heading" style="color: var(--amber);">
+              <span style="width:7px;height:7px;border-radius:50%;background:var(--amber);flex-shrink:0;display:inline-block;"></span>
+              Capstone test
+            </div>
+            <div class="ex-grid" style="grid-template-columns: 1fr;">
+              <div class="ex-card" style="border-top-color: var(--amber);">
+                <span class="ex-num" style="color:var(--amber);">End-to-end test</span>
+                <span class="ex-title">Claude Cowork: project charter to presentation deck</span>
+                <p class="ex-desc">The Day 3 test brought everything together: using <strong>Claude Cowork</strong>, we ran a full end-to-end workflow — starting from a project brief, having Cowork generate a structured project charter document, and then automatically converting that charter into a complete presentation deck, all as a single orchestrated agentic task. This validated the hub model in practice: one AI tool, multiple document outputs, no manual switching between apps.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /days-stack -->
+
+  <!-- ── MCP VS SKILLS ── -->
+  <p class="section-label" id="mcp-vs-skills">MCP vs Skills — the core distinction</p>
+  <div class="compare-grid">
+    <div class="compare-card skills">
+      <div class="compare-card-head">
+        <h3>Skills — teach Claude <em>how</em> to work</h3>
+        <p>Methodology · tone · format · metrics · logic</p>
+      </div>
+      <ul>
+        <li>Packaged prompts &amp; instructions in SKILL.md files</li>
+        <li>Define methodology, tone, output format, evaluation criteria</li>
+        <li>Persist across all chat sessions — no re-explaining ever</li>
+        <li>Triggered automatically via intent matching or slash commands</li>
+        <li>Admins can publish org-wide shared skill libraries</li>
+        <li>Can include executable scripts for technical workflows</li>
+      </ul>
+      <div class="example-row">Example: a risk-register skill that always outputs probability/impact scores, trigger conditions, and mitigation plans in your org's exact standard format</div>
+    </div>
+    <div class="compare-card mcp">
+      <div class="compare-card-head">
+        <h3>MCP — define what Claude can <em>reach</em></h3>
+        <p>Data sources · tools · external systems · boundaries</p>
+      </div>
+      <ul>
+        <li>Connects Claude to external tools &amp; live data sources</li>
+        <li>Pull real-time data: databases, spreadsheets, Slack, APIs</li>
+        <li>Acts as a limiter — ensures deterministic, controlled behavior</li>
+        <li>Connectors (remote/cloud) vs. Extensions (local machine)</li>
+        <li>Granular permission management per individual tool action</li>
+        <li>Open standard — any service can build an MCP server</li>
+      </ul>
+      <div class="example-row">Example: pulling Q3 actuals from a database and reading the latest Slack standup before Claude generates an executive status report</div>
+    </div>
+  </div>
+  <div class="rule-box">
+    <strong>Rule of thumb:</strong> Use <strong>Skills</strong> to encode repeatable logic — how to structure a report, what methodology to follow, tone and format. Use <strong>MCP</strong> to feed Claude real-world data — what numbers to use, where to look, what actions it's permitted to take. They work best <em>together</em>: MCP fetches the live data, Skills determine how Claude processes, evaluates, and presents it.
+  </div>
+
+  <!-- ── KEY LEARNINGS ── -->
+  <p class="section-label" id="learnings">Key learnings</p>
+  <div class="learnings-grid">
+
+    <div class="learning-card">
+      <div class="learning-icon" style="background:#e8eef8;">🧠</div>
+      <h4>Context is your most valuable resource</h4>
+      <p>The quality of AI output is determined less by the model's intelligence and more by the quality of context you provide. Strategically include what's relevant, exclude what's noise, separate unrelated conversations, and refresh key instructions in long sessions. Context engineering is the new competitive advantage.</p>
+    </div>
+
+    <div class="learning-card">
+      <div class="learning-icon" style="background:#fdf0e0;">🔗</div>
+      <h4>AI as a hub changes everything</h4>
+      <p>The shift from "AI as a chatbot" to "AI as the central hub of your workflow" is profound. Instead of juggling 10 disconnected tools, you interact with one AI that orchestrates all of them via MCP. This is the LLM OS concept: AI becomes the universal coordinator, and your tools become its peripherals.</p>
+    </div>
+
+    <div class="learning-card">
+      <div class="learning-icon" style="background:#e2f3f0;">📦</div>
+      <h4>Skills make AI behave consistently</h4>
+      <p>The biggest friction in daily AI use is re-explaining your preferences, format requirements, and methodology in every new chat. Skills solve this permanently. Once you encode a workflow — a risk assessment process, a charter template, a vendor scoring rubric — it's always on, always consistent, and available to your entire team.</p>
+    </div>
+
+    <div class="learning-card">
+      <div class="learning-icon" style="background:#fdf0f0;">⚡</div>
+      <h4>Artifacts democratize app building</h4>
+      <p>Gen 3 AI-powered artifacts mean that anyone in your org can now build interactive tools — dashboards, assessments, trackers — without writing code. The workflow is: describe what you need → Claude builds it → share the link. This flattens the gap between "having an idea" and "having a working tool" from weeks to minutes.</p>
+    </div>
+
+    <div class="learning-card">
+      <div class="learning-icon" style="background:#e8eef8;">🔄</div>
+      <h4>MCP vs Skills: complementary not competing</h4>
+      <p>A common confusion: Skills and MCP solve different problems. Skills encode <em>logic</em> (how Claude should think, what format to use, what criteria to apply). MCP controls <em>access</em> (what data Claude can read, what actions it can take, what systems it can touch). The most effective AI setups combine both: MCP brings in live data, Skills shape what Claude does with it.</p>
+    </div>
+
+    <div class="learning-card">
+      <div class="learning-icon" style="background:#fdf0e0;">🔐</div>
+      <h4>With more power comes new security risks</h4>
+      <p>As AI gains the ability to take real-world actions — sending emails, modifying files, querying databases — the attack surface grows. Prompt injection (malicious instructions hidden in content the AI reads) is a real threat. Best practice: treat all external content as untrusted, use minimal permissions, require human approval for irreversible actions, and audit your connected MCP servers regularly.</p>
+    </div>
+
+  </div>
+
+  <!-- ── PROJECTS BUILT ── -->
+  <p class="section-label" id="projects">Types of projects &amp; tools built</p>
+  <div class="projects-grid">
+    <div class="proj-card">
+      <span class="proj-icon">📋</span>
+      <span class="proj-name">Promptuary</span>
+      <p class="proj-desc">MCP-based prompt library organized by PMBOK performance domains — PM prompts at your fingertip, accessible without leaving the conversation</p>
+    </div>
+    <div class="proj-card">
+      <span class="proj-icon">⚡</span>
+      <span class="proj-name">AI-powered artifacts</span>
+      <p class="proj-desc">Interactive tools — flashcards, dashboards, Slack analytics, strength assessments — built without writing code</p>
+    </div>
+    <div class="proj-card">
+      <span class="proj-icon">🛠</span>
+      <span class="proj-name">Custom skills</span>
+      <p class="proj-desc">Reusable SKILL.md files for risk registers, project charters, sprint planning, and vendor evaluation scoring</p>
+    </div>
+    <div class="proj-card">
+      <span class="proj-icon">🖥</span>
+      <span class="proj-name">Cowork automations</span>
+      <p class="proj-desc">No-code desktop task automation — presentation decks, file management, and document generation from existing content</p>
+    </div>
+  </div>
+
+</main>
+
+<footer class="site-foote
